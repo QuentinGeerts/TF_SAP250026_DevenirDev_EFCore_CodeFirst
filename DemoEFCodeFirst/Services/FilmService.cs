@@ -25,4 +25,14 @@ public class FilmService : IFilmService
 
         return _filmRepository.GetByReleasedYear(releasedYear);
     }
+
+    public async Task<IEnumerable<Film>> GetAllFilmsAsyncTracking()
+    {
+        return await _filmRepository.GetAllFilmsAsyncTracking();
+    }
+
+    public async Task<IEnumerable<Film>> GetAllFilmsAsyncNoTracking()
+    {
+        return await _filmRepository.GetAllFilmsAsyncTracking();
+    }
 }

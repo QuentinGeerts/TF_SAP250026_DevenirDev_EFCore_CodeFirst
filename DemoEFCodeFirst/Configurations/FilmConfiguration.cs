@@ -11,6 +11,7 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
         builder.ToTable("Films", schema =>
         {
             schema.HasCheckConstraint("CK_Film_ReleasedYear_Before1950", "ReleasedYear >= 1950");
+            schema.HasCheckConstraint("CK_Film_Duration_Positive", "Duration > 0");
         });
 
         // Configuration de la clef primaire
@@ -26,6 +27,10 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
             .IsRequired()
             .HasComment("L'année de sortie du film");
 
+        builder.Property(f => f.Duration)
+            .IsRequired()
+            .HasComment("La durée du film en minutes");
+
         builder.HasOne(c => c.Creator).WithMany(f => f.Films)
             .HasForeignKey(f => f.CreatorId);
 
@@ -34,6 +39,9 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
             .UsingEntity<FilmActor>(builder =>
             {
                 builder.HasKey(fa => new { fa.ActorId, fa.FilmId });
+
+                builder.Property(fa => fa.CharacterLastname).HasMaxLength(50);
+                builder.Property(fa => fa.CharacterFirstname).HasMaxLength(50);
 
                 builder.HasOne(fa => fa.Film)
                     .WithMany()
@@ -49,37 +57,48 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
                     new FilmActor
                     {
                         ActorId = 1,
-                        FilmId = 1
+                        FilmId = 1,
+                        CharacterFirstname = "Jake",
+                        CharacterLastname = "Sulley"
                     },
                     new FilmActor
                     {
                         ActorId = 2,
-                        FilmId = 1
+                        FilmId = 1,
+                        CharacterFirstname = "Neytiri",
                     },
                     new FilmActor
                     {
                         ActorId = 3,
-                        FilmId = 1
+                        FilmId = 1,
+                        CharacterFirstname = "Grace",
+                        CharacterLastname = "Augustine"
                     },
                     new FilmActor
                     {
                         ActorId = 1,
-                        FilmId = 2
+                        FilmId = 2,
+                        CharacterFirstname = "Jake",
+                        CharacterLastname = "Sulley"
                     },
                     new FilmActor
                     {
                         ActorId = 2,
-                        FilmId = 2
+                        FilmId = 2,
+                        CharacterFirstname = "Neytiri",
                     },
                     new FilmActor
                     {
                         ActorId = 1,
-                        FilmId = 3
+                        FilmId = 3,
+                        CharacterFirstname = "Jake",
+                        CharacterLastname = "Sulley"
                     },
                     new FilmActor
                     {
                         ActorId = 2,
-                        FilmId = 3
+                        FilmId = 3,
+                        CharacterFirstname = "Neytiri",
                     }
                 );
             });
@@ -90,6 +109,7 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
                 Id = 1,
                 Title = "Avatar",
                 ReleasedYear = 2009,
+                Duration = 162,
                 CreatorId = 1
             },   
             new Film
@@ -97,6 +117,7 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
                 Id = 2,
                 Title = "Avatar 2",
                 ReleasedYear = 2022,
+                Duration = 192,
                 CreatorId = 1
             },   
             new Film
@@ -104,6 +125,7 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
                 Id = 3,
                 Title = "Avatar 3",
                 ReleasedYear = 2025,
+                Duration = 210,
                 CreatorId = 1
             }
         );

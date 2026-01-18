@@ -9,4 +9,7 @@ public interface IFilmService
     IEnumerable<Film> GetAllFilms();
     IEnumerable<Film> GetAllFilmByReleasedYear(int releasedYear);
 
+    Task<IEnumerable<Film>> GetAllFilmsAsyncTracking();
+    Task<IEnumerable<Film>> GetAllFilmsAsyncNoTracking();
+
 }

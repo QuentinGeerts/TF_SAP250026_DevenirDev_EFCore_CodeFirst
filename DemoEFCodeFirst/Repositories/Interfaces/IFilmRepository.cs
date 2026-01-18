@@ -4,4 +4,6 @@
 public interface IFilmRepository<T> : IRepository<T> where T : class
 {
     IEnumerable<T> GetByReleasedYear (int releasedYear);
+    Task<IEnumerable<T>> GetAllFilmsAsyncTracking();
+    Task<IEnumerable<T>> GetAllFilmsAsyncNoTracking();
 }

@@ -29,6 +29,23 @@ public class FilmRepository : Repository<Film>, IFilmRepository<Film>
             .Include(f => f.Creator);
     }
 
+    public async Task<IEnumerable<Film>> GetAllFilmsAsyncNoTracking()
+    {
+        return await _dbSet
+            .Include(f => f.Actors)
+            .Include(f => f.Creator)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Film>> GetAllFilmsAsyncTracking()
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .Include(f => f.Actors)
+            .Include(f => f.Creator)
+            .ToListAsync();
+    }
+
     public override Film? GetById(int id)
     {
         return _dbSet
