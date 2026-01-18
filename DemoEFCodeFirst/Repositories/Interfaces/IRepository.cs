@@ -2,6 +2,8 @@
 
 namespace DemoEFCodeFirst.Repositories.Interfaces;
 
+// Définit les opérations CRUD génériques pour une entité T
+
 public interface IRepository<T> where T : class
 {
     // CRUD

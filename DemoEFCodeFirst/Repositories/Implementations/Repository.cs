@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemoEFCodeFirst.Repositories.Implementations;
 
-public class Repository<T> : IRepository<T> where T : class
+public abstract class Repository<T> : IRepository<T> where T : class
 {
     protected readonly DataContext _context;
     protected readonly DbSet<T> _dbSet;
@@ -15,28 +15,13 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public void Add(T f)
-    {
-        _dbSet.Add(f);
-    }
+    public abstract void Add(T f);
 
-    public void Delete(int id)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract void Delete(int id);
 
-    public IEnumerable<T> GetAll()
-    {
-        throw new NotImplementedException();
-    }
+    public abstract IEnumerable<T> GetAll();
 
-    public T? GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract T? GetById(int id);
 
-    public void Update(int id, T entity)
-    {
-        throw new NotImplementedException();
-    }
+    public abstract void Update(int id, T entity);
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoEFCodeFirst.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260116100605_AddManyToManyFilmActor")]
+    [Migration("20260118112150_AddManyToManyFilmActor")]
     partial class AddManyToManyFilmActor
     {
         /// <inheritdoc />

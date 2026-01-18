@@ -35,6 +35,16 @@ public class FilmConfiguration : IEntityTypeConfiguration<Film>
             {
                 builder.HasKey(fa => new { fa.ActorId, fa.FilmId });
 
+                builder.HasOne(fa => fa.Film)
+                    .WithMany()
+                    .HasForeignKey(fa => fa.FilmId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(fa => fa.Actor)
+                    .WithMany()
+                    .HasForeignKey(fa => fa.ActorId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 builder.HasData(
                     new FilmActor
                     {
