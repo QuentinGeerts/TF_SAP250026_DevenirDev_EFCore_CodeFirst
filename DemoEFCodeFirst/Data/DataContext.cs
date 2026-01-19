@@ -32,8 +32,6 @@ public class DataContext : DbContext
             string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MovieDB;Integrated Security=True;Trust Server Certificate=True";
             optionsBuilder.UseSqlServer(connectionString);
         }
-
-        base.OnConfiguring(optionsBuilder);
     }
 
     // ONMODELCREATING : Configuration du modèle de données (Fluent API)
@@ -56,7 +54,5 @@ public class DataContext : DbContext
         // typeof(DataContext).Assembly : Récupère l'assembly (projet) courant (où se trouve DataContext)
         // Avantage : Plus besoin d'ajouter manuellement chaque configuration
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
-
-        base.OnModelCreating(modelBuilder);
     }
 }
