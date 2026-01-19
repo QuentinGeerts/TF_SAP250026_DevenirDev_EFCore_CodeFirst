@@ -1,945 +1,712 @@
-# 📚 Démonstration Entity Framework Core - Approche Code First
+# 🎬 DemoEFCodeFirst - Entity Framework Core Code First
 
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![C#](https://img.shields.io/badge/C%23-12.0-239120?style=for-the-badge&logo=csharp&logoColor=white)
-![Entity Framework Core](https://img.shields.io/badge/EF%20Core-10.0.2-512BD4?style=for-the-badge&logo=nuget&logoColor=white)
-![SQL Server](https://img.shields.io/badge/SQL%20Server-LocalDB-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
-![License](https://img.shields.io/badge/License-Educational-green?style=for-the-badge)
+![Entity Framework Core](https://img.shields.io/badge/Entity%20Framework%20Core-10.0.2-512BD4?style=for-the-badge&logo=nuget&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-LocalDB-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-12.0-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
-> Projet pédagogique illustrant les concepts fondamentaux d'Entity Framework Core avec l'approche Code First
+## 📚 À propos du projet
 
-## 🎯 Objectifs pédagogiques
+Projet de démonstration pédagogique pour l'apprentissage d'Entity Framework Core avec l'approche **Code First**. Ce projet couvre les concepts essentiels de la gestion de base de données avec EF Core, du CRUD basique aux optimisations de performance avancées.
 
-Ce projet de démonstration vise à maîtriser :
-- ✅ L'approche **Code First** avec Entity Framework Core
-- ✅ La configuration des entités avec **Fluent API**
-- ✅ Les **migrations** de base de données
-- ✅ Les relations entre entités (One-to-One, One-to-Many, Many-to-Many)
-- ✅ Le **pattern Repository**
-- ✅ L'organisation en couches (Models, Data, Repositories, Services)
+### 🎯 Objectifs pédagogiques
 
-## 📋 Table des matières
+- ✅ Maîtriser l'approche Code First d'Entity Framework Core
+- ✅ Comprendre les relations entre entités (One-to-Many, Many-to-Many)
+- ✅ Apprendre les opérations CRUD asynchrones
+- ✅ Optimiser les requêtes et gérer le tracking
+- ✅ Manipuler les migrations et le schéma de base de données
+- ✅ Utiliser la Fluent API pour la configuration avancée
+- ✅ Implémenter le pattern Repository et Service
 
-- [Prérequis](#-prérequis)
-- [Structure du projet](#-structure-du-projet)
-- [Concepts clés](#-concepts-clés)
-- [Installation et configuration](#-installation-et-configuration)
-- [Les relations entre entités](#-les-relations-entre-entités)
-- [Les migrations](#-les-migrations)
-- [Utilisation](#-utilisation)
-- [Pour aller plus loin](#-pour-aller-plus-loin)
+---
 
-## 🔧 Prérequis
-
-- **.NET 10.0** ou supérieur
-- **SQL Server LocalDB** (inclus avec Visual Studio)
-- **Entity Framework Core Tools** (CLI ou PMC)
-
-### Installation de l'outil CLI EF Core
-
-```bash
-# Installation
-dotnet tool install --global dotnet-ef
-
-# Mise à jour
-dotnet tool update --global dotnet-ef
-
-# Vérification
-dotnet ef --version
-```
-
-## 📁 Structure du projet
+## 🏗️ Architecture du projet
 
 ```
 DemoEFCodeFirst/
-├── 📂 Models/                    # Entités du domaine
-│   ├── Actor.cs
-│   ├── Creator.cs
-│   ├── Film.cs
-│   └── FilmActor.cs             # Table de jonction Many-to-Many
-├── 📂 Data/
-│   └── DataContext.cs           # Contexte EF Core
-├── 📂 Configurations/           # Configuration Fluent API
+├── 📁 Configurations/          # Configuration Fluent API des entités
 │   ├── ActorConfiguration.cs
 │   ├── CreatorConfiguration.cs
 │   └── FilmConfiguration.cs
-├── 📂 Repositories/             # Pattern Repository
+├── 📁 Data/                    # DbContext et accès aux données
+│   └── DataContext.cs
+├── 📁 Models/                  # Entités du domaine
+│   ├── Actor.cs
+│   ├── Creator.cs
+│   ├── Film.cs
+│   └── FilmActor.cs          # Table de jonction Many-to-Many
+├── 📁 Repositories/            # Pattern Repository
 │   ├── Interfaces/
-│   │   ├── IRepository.cs       # Interface générique CRUD
-│   │   └── IFilmRepository.cs   # Interface spécifique Films
+│   │   ├── IRepository.cs
+│   │   └── IFilmRepository.cs
 │   └── Implementations/
-│       ├── Repository.cs        # Repository générique abstrait
-│       └── FilmRepository.cs    # Repository Films
-├── 📂 Services/                 # Logique métier
+│       ├── Repository.cs
+│       └── FilmRepository.cs
+├── 📁 Services/                # Logique métier
 │   ├── Interfaces/
 │   │   └── IFilmService.cs
 │   └── FilmService.cs
-├── 📂 Migrations/               # Historique des migrations
-└── Program.cs                   # Point d'entrée
+├── 📁 Migrations/              # Historique des migrations
+├── Menu.cs                     # Interface de démonstration
+└── Program.cs                  # Point d'entrée
 ```
 
-## 💡 Concepts clés
+---
 
-### 1. Code First
+## 🚀 Prérequis
 
-L'approche **Code First** consiste à :
-1. Définir les classes C# (modèles)
-2. Configurer les relations et contraintes
-3. Générer automatiquement la base de données via les migrations
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) ou supérieur
+- [SQL Server LocalDB](https://learn.microsoft.com/sql/database-engine/configure-windows/sql-server-express-localdb) ou SQL Server
+- Un IDE : [Visual Studio 2022](https://visualstudio.microsoft.com/), [Visual Studio Code](https://code.visualstudio.com/) ou [JetBrains Rider](https://www.jetbrains.com/rider/)
+- [Entity Framework Core CLI Tools](https://learn.microsoft.com/ef/core/cli/dotnet)
 
-### 2. DataContext
+### Installation des outils EF Core
 
-Le `DataContext` est le point central d'interaction avec la base de données :
+```bash
+# Installation globale
+dotnet tool install --global dotnet-ef
+
+# Mise à jour (si déjà installé)
+dotnet tool update --global dotnet-ef
+
+# Vérification de l'installation
+dotnet ef --version
+```
+
+---
+
+## 📦 Installation et configuration
+
+### 1. Cloner le dépôt
+
+```bash
+git clone https://github.com/votre-username/DemoEFCodeFirst.git
+cd DemoEFCodeFirst
+```
+
+### 2. Restaurer les packages NuGet
+
+```bash
+dotnet restore
+```
+
+### 3. Configurer la chaîne de connexion
+
+La chaîne de connexion est définie dans `DataContext.cs` (méthode `OnConfiguring`) :
 
 ```csharp
-public class DataContext : DbContext
+string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;
+                            Initial Catalog=MovieDB;
+                            Integrated Security=True;
+                            Trust Server Certificate=True";
+```
+
+> 💡 **Astuce** : Pour utiliser une autre base de données, modifiez cette chaîne de connexion.
+
+### 4. Créer la base de données
+
+```bash
+# Appliquer les migrations existantes
+dotnet ef database update
+
+# OU créer une nouvelle migration (si besoin)
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+### 5. Lancer l'application
+
+```bash
+dotnet run
+```
+
+---
+
+## 🎓 Concepts couverts
+
+### 1️⃣ CRUD de base
+
+#### **CREATE** - Ajouter des données
+```csharp
+var actor = new Actor
 {
-    // Chaque DbSet<T> représente une table
-    public DbSet<Actor> Actors { get; set; }
-    public DbSet<Creator> Creators { get; set; }
-    public DbSet<Film> Films { get; set; }
-    public DbSet<FilmActor> FilmActors { get; set; }
-}
+    Lastname = "Dujardin",
+    Firstname = "Jean"
+};
+context.Actors.Add(actor);
+await context.SaveChangesAsync();
 ```
 
-**Méthodes importantes :**
-- **OnConfiguring** : Configure la chaîne de connexion
-- **OnModelCreating** : Configure le modèle via Fluent API
-
-### 3. Fluent API vs Data Annotations
-
-Ce projet utilise la **Fluent API** pour la configuration :
-
-**Avantages :**
-- ✅ Séparation des préoccupations (configuration externe aux modèles)
-- ✅ Plus puissante et flexible que les Data Annotations
-- ✅ Code plus propre dans les entités
-- ✅ Configuration centralisée
-
-**Exemple de configuration :**
-
+#### **READ** - Lire des données
 ```csharp
-public class FilmConfiguration : IEntityTypeConfiguration<Film>
-{
-    public void Configure(EntityTypeBuilder<Film> builder)
-    {
-        builder.Property(f => f.Title)
-            .IsRequired()
-            .HasMaxLength(100);
+// Récupérer tous les acteurs
+var actors = await context.Actors.ToListAsync();
 
-        builder.ToTable("Films", schema =>
-        {
-            schema.HasCheckConstraint("CK_Film_ReleasedYear_Before1950", 
-                                      "ReleasedYear >= 1950");
-        });
-    }
-}
+// Recherche par ID
+var actor = await context.Actors.FindAsync(1);
+
+// Filtrage avec Where()
+var films2009 = await context.Films
+    .Where(f => f.ReleasedYear == 2009)
+    .ToListAsync();
 ```
 
-### 4. Pattern Repository
-
-**Abstraction de la couche d'accès aux données** :
-
-- `IRepository<T>` : Interface générique avec opérations CRUD
-- `Repository<T>` : Implémentation abstraite de base
-- `IFilmRepository<T>` : Interface spécifique aux films
-- `FilmRepository` : Implémentation concrète avec méthodes personnalisées
-
-**Avantages :**
-- ✅ Testabilité (possibilité de mock)
-- ✅ Réutilisabilité du code
-- ✅ Séparation des responsabilités (SRP)
-- ✅ Facilite le changement de provider (SQL Server → PostgreSQL, etc.)
-
-### 5. Seed Data (données initiales)
-
-Utilisation de `HasData()` pour pré-remplir la base :
-
+#### **UPDATE** - Modifier des données
 ```csharp
-builder.HasData(
-    new Film 
-    { 
-        Id = 1, 
-        Title = "Avatar", 
-        ReleasedYear = 2009, 
-        CreatorId = 1 
-    },
-    new Film 
-    { 
-        Id = 2, 
-        Title = "Avatar 2", 
-        ReleasedYear = 2022, 
-        CreatorId = 1 
-    }
-);
+var film = await context.Films.FirstOrDefaultAsync();
+film.ReleasedYear = 2010;
+await context.SaveChangesAsync();
 ```
 
-**⚠️ Important :** Avec `HasData()`, vous devez **spécifier manuellement les clés primaires**.
-
-## 🔗 Les relations entre entités
-
-Entity Framework Core supporte trois types de relations. Voici comment les configurer avec la **Fluent API**.
-
-### 1️⃣ Relation One-to-One (1:1)
-
-**Exemple : Film ↔ FilmDetail**
-
-Un film a **un seul** détail, et un détail appartient à **un seul** film.
-
-#### Modèles
-
+#### **DELETE** - Supprimer des données
 ```csharp
-public class Film
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-    
-    // Navigation property
-    public FilmDetail? Detail { get; set; }
-}
-
-public class FilmDetail
-{
-    public int Id { get; set; }
-    public string Synopsis { get; set; }
-    public int Duration { get; set; }
-    
-    // Foreign Key
-    public int FilmId { get; set; }
-    
-    // Navigation property
-    public Film Film { get; set; }
-}
+var actor = await context.Actors.FindAsync(1);
+context.Actors.Remove(actor);
+await context.SaveChangesAsync();
 ```
 
-#### Configuration Fluent API
+---
 
+### 2️⃣ Relations entre entités
+
+#### **One-to-Many** : Creator ➡️ Films
 ```csharp
-public class FilmConfiguration : IEntityTypeConfiguration<Film>
-{
-    public void Configure(EntityTypeBuilder<Film> builder)
-    {
-        // Relation One-to-One
-        builder.HasOne(f => f.Detail)
-            .WithOne(d => d.Film)
-            .HasForeignKey<FilmDetail>(d => d.FilmId)
-            .OnDelete(DeleteBehavior.Cascade);
-    }
-}
-```
-
-**Points clés :**
-- `HasOne()` ... `WithOne()` : Définit la relation 1:1
-- `HasForeignKey<T>()` : Spécifie la table dépendante (avec la FK)
-- La FK peut être optionnelle ou obligatoire selon le type (`int?` vs `int`)
-
-### 2️⃣ Relation One-to-Many (1:N)
-
-**Exemple : Creator → Films** *(utilisé dans le projet)*
-
-Un créateur a **plusieurs** films, un film a **un seul** créateur.
-
-#### Modèles
-
-```csharp
+// Un créateur peut avoir plusieurs films
 public class Creator
 {
     public int Id { get; set; }
-    public string Firstname { get; set; }
     public string Lastname { get; set; }
+    public string Firstname { get; set; }
     
-    // Navigation collection
     public ICollection<Film> Films { get; set; } = [];
 }
 
-public class Film
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-    
-    // Foreign Key
-    public int CreatorId { get; set; }
-    
-    // Navigation property
-    public Creator Creator { get; set; }
-}
+// Configuration Fluent API
+builder.HasOne(f => f.Creator)
+    .WithMany(c => c.Films)
+    .HasForeignKey(f => f.CreatorId);
 ```
 
-#### Configuration Fluent API
-
+#### **Many-to-Many** : Films ⬌ Actors (avec table de jonction)
 ```csharp
-public class FilmConfiguration : IEntityTypeConfiguration<Film>
-{
-    public void Configure(EntityTypeBuilder<Film> builder)
-    {
-        // Relation One-to-Many
-        builder.HasOne(f => f.Creator)          // Un film a un créateur
-            .WithMany(c => c.Films)              // Un créateur a plusieurs films
-            .HasForeignKey(f => f.CreatorId)     // La FK est CreatorId
-            .OnDelete(DeleteBehavior.Cascade);   // Suppression en cascade
-    }
-}
-```
-
-**Points clés :**
-- `HasOne()` ... `WithMany()` : Définit la relation 1:N
-- `HasForeignKey()` : Spécifie la colonne de clé étrangère
-- `OnDelete()` : Comportement lors de la suppression
-  - `Cascade` : Supprime les entités liées
-  - `Restrict` : Empêche la suppression si des entités liées existent
-  - `SetNull` : Met la FK à NULL
-
-### 3️⃣ Relation Many-to-Many (N:N)
-
-**Exemple : Films ↔ Actors** *(utilisé dans le projet)*
-
-Un film a **plusieurs** acteurs, un acteur joue dans **plusieurs** films.
-
-#### Modèles
-
-```csharp
-public class Film
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-    
-    // Navigation collection
-    public ICollection<Actor> Actors { get; set; } = [];
-}
-
-public class Actor
-{
-    public int Id { get; set; }
-    public string Firstname { get; set; }
-    public string Lastname { get; set; }
-    
-    // Navigation collection
-    public ICollection<Film> Films { get; set; } = [];
-}
-
-// Table de jonction explicite
+// Table de jonction explicite avec métadonnées
 public class FilmActor
 {
     public int FilmId { get; set; }
     public int ActorId { get; set; }
+    public string? CharacterLastname { get; set; }
+    public string CharacterFirstname { get; set; }
     
-    // Navigation properties
     public Film Film { get; set; }
     public Actor Actor { get; set; }
 }
-```
 
-#### Configuration Fluent API - Méthode 1 (Recommandée)
-
-**Avec table de jonction explicite** (permet d'ajouter des propriétés supplémentaires) :
-
-```csharp
-public class FilmConfiguration : IEntityTypeConfiguration<Film>
-{
-    public void Configure(EntityTypeBuilder<Film> builder)
+// Configuration avec UsingEntity()
+builder.HasMany(f => f.Actors)
+    .WithMany(a => a.Films)
+    .UsingEntity<FilmActor>(builder =>
     {
-        builder.HasMany(f => f.Actors)
-            .WithMany(a => a.Films)
-            .UsingEntity<FilmActor>(
-                // Configuration de la table de jonction
-                joinBuilder =>
-                {
-                    // Clé primaire composite
-                    joinBuilder.HasKey(fa => new { fa.ActorId, fa.FilmId });
-                    
-                    // Relation vers Film
-                    joinBuilder.HasOne(fa => fa.Film)
-                        .WithMany()
-                        .HasForeignKey(fa => fa.FilmId)
-                        .OnDelete(DeleteBehavior.Cascade);
-                    
-                    // Relation vers Actor
-                    joinBuilder.HasOne(fa => fa.Actor)
-                        .WithMany()
-                        .HasForeignKey(fa => fa.ActorId)
-                        .OnDelete(DeleteBehavior.Cascade);
-                    
-                    // Seed data pour la table de jonction
-                    joinBuilder.HasData(
-                        new FilmActor { ActorId = 1, FilmId = 1 },
-                        new FilmActor { ActorId = 2, FilmId = 1 },
-                        new FilmActor { ActorId = 3, FilmId = 1 }
-                    );
-                }
-            );
-    }
-}
+        builder.HasKey(fa => new { fa.ActorId, fa.FilmId });
+        // ... configuration supplémentaire
+    });
 ```
 
-#### Configuration Fluent API - Méthode 2 (Simple)
+---
 
-**Sans table de jonction explicite** (EF Core crée automatiquement la table) :
+### 3️⃣ Chargement des relations
 
+#### **Eager Loading** (recommandé)
 ```csharp
-public class FilmConfiguration : IEntityTypeConfiguration<Film>
-{
-    public void Configure(EntityTypeBuilder<Film> builder)
+// Charge les données en UNE requête SQL
+var films = await context.Films
+    .Include(f => f.Creator)
+    .Include(f => f.Actors)
+    .ToListAsync();
+```
+
+#### **Explicit Loading**
+```csharp
+var film = await context.Films.FirstAsync();
+await context.Entry(film)
+    .Reference(f => f.Creator)
+    .LoadAsync();
+```
+
+---
+
+### 4️⃣ Requêtes avancées
+
+#### **Filtrage avec Where()**
+```csharp
+// Filtrage simple
+var filmsLongs = await context.Films
+    .Where(f => f.Duration >= 180)
+    .ToListAsync();
+
+// Filtrage multiple (AND)
+var filmsRecents = await context.Films
+    .Where(f => f.ReleasedYear > 2010 && f.Duration > 180)
+    .ToListAsync();
+
+// Recherche LIKE avec Contains()
+var filmsAvatar = await context.Films
+    .Where(f => f.Title.Contains("Avatar"))
+    .ToListAsync();
+```
+
+#### **Tri avec OrderBy()**
+```csharp
+// Tri croissant
+var films = await context.Films
+    .OrderBy(f => f.Title)
+    .ToListAsync();
+
+// Tri décroissant
+var films = await context.Films
+    .OrderByDescending(f => f.ReleasedYear)
+    .ToListAsync();
+
+// Tri multiple
+var films = await context.Films
+    .OrderByDescending(f => f.ReleasedYear)
+    .ThenBy(f => f.Title)
+    .ToListAsync();
+```
+
+#### **Pagination**
+```csharp
+int pageSize = 10;
+int pageNumber = 1;
+
+var films = await context.Films
+    .OrderBy(f => f.Title)
+    .Skip((pageNumber - 1) * pageSize)
+    .Take(pageSize)
+    .ToListAsync();
+```
+
+#### **Agrégations**
+```csharp
+// Compter
+var count = await context.Films.CountAsync();
+
+// Moyenne
+var avgDuration = await context.Films.AverageAsync(f => f.Duration);
+
+// Min/Max
+var maxDuration = await context.Films.MaxAsync(f => f.Duration);
+var minDuration = await context.Films.MinAsync(f => f.Duration);
+
+// Vérifier l'existence
+var hasLongFilms = await context.Films.AnyAsync(f => f.Duration > 180);
+```
+
+#### **Projections avec Select()**
+```csharp
+// Projection simple
+var titres = await context.Films
+    .Select(f => f.Title)
+    .ToListAsync();
+
+// Projection avec type anonyme
+var filmsSummary = await context.Films
+    .Select(f => new
     {
-        // EF Core créera automatiquement une table FilmActor
-        builder.HasMany(f => f.Actors)
-            .WithMany(a => a.Films);
-    }
-}
+        f.Title,
+        DurationHours = f.Duration / 60.0,
+        Year = f.ReleasedYear
+    })
+    .ToListAsync();
 ```
 
-**⚠️ Limitation :** Impossible d'ajouter des colonnes supplémentaires (ex: rôle, date, ordre).
+---
 
-#### Quand utiliser la table de jonction explicite ?
+### 5️⃣ Tracking et Performance
 
-✅ **Utilisez une table explicite si :**
-- Vous avez besoin de propriétés supplémentaires (ex: `Role`, `Order`, `HiredDate`)
-- Vous voulez plus de contrôle sur la configuration
-- Vous avez besoin de seed data pour la relation
-
-❌ **Utilisez la configuration simple si :**
-- Aucune donnée supplémentaire n'est nécessaire
-- Vous voulez une relation pure N:N
-
-### 📊 Récapitulatif des relations
-
-| Type | Syntaxe Fluent API | Exemple |
-|------|-------------------|---------|
-| **One-to-One** | `HasOne().WithOne().HasForeignKey<T>()` | Film → FilmDetail |
-| **One-to-Many** | `HasOne().WithMany().HasForeignKey()` | Creator → Films |
-| **Many-to-Many** | `HasMany().WithMany()` ou `UsingEntity<T>()` | Films ↔ Actors |
-
-### 🎯 Règles de convention EF Core
-
-Si vous ne configurez rien, EF Core applique des conventions :
-
-1. **Clé primaire** : Propriété nommée `Id` ou `{ClassName}Id`
-2. **Clé étrangère** : Propriété nommée `{NavigationPropertyName}Id`
-3. **Type de relation** : Détecté automatiquement selon les navigation properties
-
-**💡 Bonne pratique :** Toujours configurer explicitement avec Fluent API pour plus de clarté.
-
-## 🚀 Installation et configuration
-
-### 1. Packages NuGet installés
-
-```xml
-<ItemGroup>
-  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2">
-    <PrivateAssets>all</PrivateAssets>
-    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-  </PackageReference>
-</ItemGroup>
-```
-
-### 2. Chaîne de connexion
-
-Définie dans `DataContext.OnConfiguring()` :
-
+#### **AsNoTracking()** - Lecture seule optimisée
 ```csharp
-protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-{
-    if (!optionsBuilder.IsConfigured)
-    {
-        string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;
-                                   Initial Catalog=MovieDB;
-                                   Integrated Security=True;
-                                   Trust Server Certificate=True";
-        optionsBuilder.UseSqlServer(connectionString);
-    }
-}
+// AVEC tracking (par défaut) - pour modification
+var filmsTracked = await context.Films.ToListAsync();
+
+// SANS tracking - meilleure performance pour lecture seule
+var filmsNoTracked = await context.Films
+    .AsNoTracking()
+    .ToListAsync();
 ```
 
-### 3. Application des configurations
+**Avantages de AsNoTracking() :**
+- ✓ Consomme moins de mémoire
+- ✓ Plus rapide pour les requêtes de lecture
+- ✓ Parfait pour les API GET, exports, rapports
 
-Dans `OnModelCreating()`, utilisation de `ApplyConfigurationsFromAssembly` :
+**Inconvénients :**
+- ✗ Impossible de modifier directement les entités
+- ✗ Pas de détection automatique des changements
 
+#### **ChangeTracker** - États des entités
 ```csharp
-protected override void OnModelCreating(ModelBuilder modelBuilder)
+var film = await context.Films.FirstAsync();
+var entry = context.Entry(film);
+
+// États possibles :
+// - Detached  : Non suivie
+// - Unchanged : Suivie, pas de changement
+// - Added     : Nouvelle entité à insérer
+// - Modified  : Entité modifiée
+// - Deleted   : Marquée pour suppression
+
+// Annuler les changements
+entry.Reload();
+
+// Nettoyer le tracker
+context.ChangeTracker.Clear();
+```
+
+#### **ToQueryString()** - Debug SQL
+```csharp
+var query = context.Films
+    .Where(f => f.Duration > 120)
+    .OrderBy(f => f.Title)
+    .Include(f => f.Creator);
+
+var sql = query.ToQueryString();
+Console.WriteLine(sql);
+```
+
+#### **Batch SaveChanges**
+```csharp
+// ❌ MAUVAISE PRATIQUE - SaveChanges dans la boucle
+for (int i = 0; i < 10; i++)
 {
-    // Scanne et applique automatiquement toutes les configurations
-    modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
+    context.Actors.Add(new Actor { Lastname = $"Actor {i}" });
+    await context.SaveChangesAsync(); // 10 requêtes SQL!
+}
+
+// ✅ BONNE PRATIQUE - Un seul SaveChanges
+for (int i = 0; i < 10; i++)
+{
+    context.Actors.Add(new Actor { Lastname = $"Actor {i}" });
+}
+await context.SaveChangesAsync(); // 1 seule requête batch!
+```
+
+---
+
+### 6️⃣ Migrations et Schéma
+
+#### **Commandes de migration**
+
+
+| Opération | CLI .NET (dotnet ef) | Package Manager Console (PMC) |
+|-----------|----------------------|-------------------------------|
+| Ajouter une migration | `dotnet ef migrations add NomMigration` | `Add-Migration NomMigration` |
+| Appliquer les migrations | `dotnet ef database update` | `Update-Database` |
+| Annuler la dernière migration | `dotnet ef migrations remove` | `Remove-Migration` |
+| Revenir à une migration spécifique | `dotnet ef database update NomMigration` | `Update-Database NomMigration` |
+| Générer un script SQL | `dotnet ef migrations script` | `Script-Migration` |
+| Lister les migrations | `dotnet ef migrations list` | `Get-Migration` |
+
+
+#### **Fluent API vs Data Annotations**
+
+**Data Annotations** (dans le modèle) :
+```csharp
+public class Film
+{
+    [Key]
+    public int Id { get; set; }
     
-    base.OnModelCreating(modelBuilder);
+    [Required]
+    [MaxLength(200)]
+    public string Title { get; set; }
 }
 ```
 
-**Avantage :** Plus besoin d'ajouter manuellement chaque configuration !
-
-## 🔄 Les migrations
-
-### Workflow complet
-
-```
-┌─────────────────┐
-│ 1. Créer/Modifier│
-│   les modèles   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ 2. Ajouter une  │
-│   migration     │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ 3. Vérifier le  │
-│   code généré   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ 4. Appliquer    │
-│   à la BD       │
-└─────────────────┘
+**Fluent API** (dans Configuration) :
+```csharp
+public class FilmConfiguration : IEntityTypeConfiguration<Film>
+{
+    public void Configure(EntityTypeBuilder<Film> builder)
+    {
+        builder.HasKey(e => e.Id);
+        
+        builder.Property(e => e.Title)
+            .IsRequired()
+            .HasMaxLength(200);
+    }
+}
 ```
 
-### Commandes principales
+**Comparaison :**
 
-#### 1. Créer une migration
+| Critère | Data Annotations | Fluent API |
+|---------|------------------|------------|
+| Simplicité | ✅ Plus simple | ❌ Plus verbeux |
+| Emplacement | Dans le modèle | Configuration séparée |
+| Séparation des préoccupations | ❌ Mélange domaine/persistence | ✅ Séparation claire |
+| Fonctionnalités | ❌ Limitées | ✅ Complètes |
+| **Recommandation** | Pour débuter | **Pour projets professionnels** |
+
+---
+
+### 7️⃣ Seed Data - Données initiales
+
+```csharp
+public class ActorConfiguration : IEntityTypeConfiguration<Actor>
+{
+    public void Configure(EntityTypeBuilder<Actor> builder)
+    {
+        // Configuration des propriétés
+        builder.Property(a => a.Lastname).HasMaxLength(50);
+        builder.Property(a => a.Firstname).HasMaxLength(50);
+
+        // Seed Data - Données de démarrage
+        builder.HasData(
+            new Actor
+            {
+                Id = 1,
+                Lastname = "Worthington",
+                Firstname = "Sam"
+            },
+            new Actor
+            {
+                Id = 2,
+                Lastname = "Saldaña",
+                Firstname = "Zoe"
+            }
+        );
+    }
+}
+```
+
+---
+
+## 🏛️ Pattern Repository
+
+### Interface générique
+```csharp
+public interface IRepository<T> where T : class
+{
+    void Add(T entity);
+    IEnumerable<T> GetAll();
+    T? GetById(int id);
+    void Update(int id, T entity);
+    void Delete(int id);
+}
+```
+
+### Implémentation
+```csharp
+public abstract class Repository<T> : IRepository<T> where T : class
+{
+    protected readonly DataContext _context;
+    protected readonly DbSet<T> _dbSet;
+
+    public Repository(DataContext context)
+    {
+        _context = context;
+        _dbSet = _context.Set<T>();
+    }
+
+    public abstract void Add(T entity);
+    public abstract IEnumerable<T> GetAll();
+    public abstract T? GetById(int id);
+    public abstract void Update(int id, T entity);
+    public abstract void Delete(int id);
+}
+```
+
+### Repository spécifique
+```csharp
+public class FilmRepository : Repository<Film>, IFilmRepository<Film>
+{
+    public FilmRepository(DataContext context) : base(context) { }
+    
+    public IEnumerable<Film> GetByReleasedYear(int year)
+    {
+        return _dbSet
+            .Where(f => f.ReleasedYear == year)
+            .Include(f => f.Creator)
+            .Include(f => f.Actors);
+    }
+}
+```
+
+---
+
+## 📊 Modèle de données
+
+```mermaid
+erDiagram
+    CREATOR ||--o{ FILM : creates
+    FILM }o--o{ ACTOR : stars_in
+    FILM ||--o{ FILMACTOR : has
+    ACTOR ||--o{ FILMACTOR : plays_in
+
+    CREATOR {
+        int Id PK
+        string Lastname
+        string Firstname
+    }
+
+    FILM {
+        int Id PK
+        string Title
+        int ReleasedYear
+        int Duration
+        int CreatorId FK
+    }
+
+    ACTOR {
+        int Id PK
+        string Lastname
+        string Firstname
+    }
+
+    FILMACTOR {
+        int FilmId PK,FK
+        int ActorId PK,FK
+        string CharacterFirstname
+        string CharacterLastname
+    }
+```
+
+---
+
+## 🎯 Bonnes pratiques implémentées
+
+### ✅ Configuration
+- ✔️ Séparation des configurations (Fluent API dans des classes dédiées)
+- ✔️ Utilisation de `ApplyConfigurationsFromAssembly()`
+- ✔️ Contraintes de validation (Check Constraints)
+- ✔️ Commentaires sur les colonnes
+
+### ✅ Performance
+- ✔️ Utilisation de `AsNoTracking()` pour les lectures
+- ✔️ Chargement Eager avec `Include()` pour éviter N+1
+- ✔️ Batch `SaveChanges()` au lieu de multiples appels
+- ✔️ Projections avec `Select()` pour limiter les données
+
+### ✅ Architecture
+- ✔️ Pattern Repository pour abstraire l'accès aux données
+- ✔️ Services pour la logique métier
+- ✔️ Séparation des préoccupations (Domain, Data, Services)
+- ✔️ Interfaces pour l'injection de dépendances
+
+### ✅ Asynchronisme
+- ✔️ Utilisation systématique de `async`/`await`
+- ✔️ Méthodes `*Async()` pour toutes les opérations I/O
+- ✔️ Meilleure scalabilité des applications
+
+---
+
+## 🧪 Exemples d'utilisation
+
+### Exemple 1 : Créer un film avec son créateur
+```csharp
+var creator = new Creator
+{
+    Lastname = "Nolan",
+    Firstname = "Christopher"
+};
+
+var film = new Film
+{
+    Title = "Inception",
+    ReleasedYear = 2010,
+    Duration = 148,
+    Creator = creator  // Liaison automatique
+};
+
+context.Films.Add(film);
+await context.SaveChangesAsync();
+```
+
+### Exemple 2 : Récupérer les films avec relations
+```csharp
+var films = await context.Films
+    .Include(f => f.Creator)
+    .Include(f => f.Actors)
+    .Where(f => f.ReleasedYear > 2010)
+    .OrderByDescending(f => f.Duration)
+    .ToListAsync();
+
+foreach (var film in films)
+{
+    Console.WriteLine($"{film.Title} by {film.Creator.Lastname}");
+    Console.WriteLine($"Starring: {string.Join(", ", film.Actors.Select(a => a.Lastname))}");
+}
+```
+
+### Exemple 3 : Utiliser le service
+```csharp
+var filmService = new FilmService(context);
+var films2022 = filmService.GetAllFilmByReleasedYear(2022);
+```
+
+---
+
+## 🔧 Dépannage
+
+### Problème : Migration échoue
 
 ```bash
-# Via CLI
-dotnet ef migrations add NomDeLaMigration
-
-# Via Package Manager Console (PMC)
-Add-Migration NomDeLaMigration
-```
-
-**Exemples du projet :**
-```bash
-dotnet ef migrations add AddConfigurations
-dotnet ef migrations add AddManyToManyFilmActor
-```
-
-#### 2. Appliquer les migrations
-
-```bash
-# Via CLI
-dotnet ef database update
-
-# Via PMC
-Update-Database
-
-# Appliquer jusqu'à une migration spécifique
-dotnet ef database update NomDeLaMigration
-```
-
-#### 3. Revenir en arrière
-
-```bash
-# Retour à la migration précédente
-dotnet ef database update NomMigrationPrecedente
-
-# Supprimer la dernière migration (non appliquée)
-dotnet ef migrations remove
-```
-
-### Commandes utiles
-
-```bash
-# Lister toutes les migrations
-dotnet ef migrations list
-
-# Voir l'état actuel de la base
-dotnet ef migrations has-pending-model-changes
-
-# Générer un script SQL sans appliquer
-dotnet ef migrations script
-
-# Script entre deux migrations
-dotnet ef migrations script Migration1 Migration2
-
 # Supprimer la base de données
 dotnet ef database drop
 
-# Recréer la base depuis zéro
-dotnet ef database drop --force
+# Supprimer toutes les migrations
+rm -rf Migrations/
+
+# Recréer la migration initiale
+dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-### Contenu d'une migration
+### Problème : Erreur de connexion SQL Server
 
-Chaque migration génère 3 fichiers :
+- Vérifiez que SQL Server LocalDB est installé
+- Vérifiez la chaîne de connexion dans `DataContext.cs`
+- Testez la connexion avec SQL Server Management Studio
 
-```
-Migrations/
-├── 20260116092813_AddConfigurations.cs           # Code de migration
-├── 20260116092813_AddConfigurations.Designer.cs  # Métadonnées
-└── DataContextModelSnapshot.cs                    # État actuel du modèle
-```
+### Problème : Package NuGet manquant
 
-**Structure d'une migration :**
-
-```csharp
-public partial class AddConfigurations : Migration
-{
-    // Appliquer les changements
-    protected override void Up(MigrationBuilder migrationBuilder)
-    {
-        migrationBuilder.CreateTable(
-            name: "Films",
-            columns: table => new
-            {
-                Id = table.Column<int>(nullable: false)
-                    .Annotation("SqlServer:Identity", "1, 1"),
-                Title = table.Column<string>(maxLength: 100, nullable: false),
-                // ...
-            });
-    }
-
-    // Annuler les changements
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
-        migrationBuilder.DropTable(name: "Films");
-    }
-}
-```
-
-## 📖 Utilisation
-
-### Exemple 1 : Requête avec Include (Eager Loading)
-
-```csharp
-using (DataContext context = new DataContext())
-{
-    // Chargement des relations avec Include()
-    var films = context.Films
-        .Include(f => f.Creator)      // Charge le créateur
-        .Include(f => f.Actors);      // Charge les acteurs
-
-    foreach (Film f in films)
-    {
-        Console.WriteLine($"Film: {f.Title}");
-        Console.WriteLine($"Réalisateur: {f.Creator.Firstname} {f.Creator.Lastname}");
-        Console.WriteLine($"Nombre d'acteurs: {f.Actors.Count}");
-
-        foreach (var actor in f.Actors)
-        {
-            Console.WriteLine($"  - {actor.Firstname} {actor.Lastname}");
-        }
-        Console.WriteLine();
-    }
-}
-```
-
-### Exemple 2 : Utilisation du Service + Repository
-
-```csharp
-using (DataContext context = new DataContext())
-{
-    FilmService filmService = new FilmService(context);
-
-    // Appel à la logique métier
-    var films = filmService.GetAllFilmByReleasedYear(2009);
-
-    foreach (var film in films)
-    {
-        Console.WriteLine($"{film.Title} ({film.ReleasedYear})");
-        Console.WriteLine($"Réalisateur: {film.Creator.Lastname} {film.Creator.Firstname}");
-        
-        Console.WriteLine("Acteurs:");
-        foreach (var actor in film.Actors)
-        {
-            Console.WriteLine($"  • {actor.Lastname} {actor.Firstname}");
-        }
-        Console.WriteLine();
-    }
-}
-```
-
-### Exemple 3 : Transaction manuelle
-
-```csharp
-using (DataContext context = new DataContext())
-{
-    FilmService filmService = new FilmService(context);
-
-    // Début de transaction explicite
-    using (var transaction = context.Database.BeginTransaction())
-    {
-        try
-        {
-            // Opérations sur la base de données
-            var films = filmService.GetAllFilmByReleasedYear(2009);
-            
-            // Traitement...
-            
-            // Commit si tout s'est bien passé
-            transaction.Commit();
-            Console.WriteLine("✅ Transaction validée");
-        }
-        catch (Exception ex)
-        {
-            // Rollback en cas d'erreur
-            transaction.Rollback();
-            Console.WriteLine($"❌ Transaction annulée: {ex.Message}");
-            throw;
-        }
-    }
-}
-```
-
-### Exemple 4 : Ajouter un film avec acteurs
-
-```csharp
-using (DataContext context = new DataContext())
-{
-    // Récupérer des acteurs existants
-    var actors = context.Actors
-        .Where(a => a.Id == 1 || a.Id == 2)
-        .ToList();
-
-    // Créer un nouveau film
-    var newFilm = new Film
-    {
-        Title = "Avatar 4",
-        ReleasedYear = 2028,
-        CreatorId = 1,
-        Actors = actors  // Association Many-to-Many
-    };
-
-    context.Films.Add(newFilm);
-    context.SaveChanges();
-    
-    Console.WriteLine($"Film '{newFilm.Title}' ajouté avec {newFilm.Actors.Count} acteurs");
-}
-```
-
-## ⚠️ Points d'attention
-
-### 1. Include() pour le chargement des relations
-
-Sans `Include()`, les propriétés de navigation ne sont **pas chargées** (Lazy Loading désactivé par défaut) :
-
-```csharp
-// ❌ f.Creator sera NULL
-var film = context.Films.FirstOrDefault();
-Console.WriteLine(film.Creator.Firstname); // NullReferenceException!
-
-// ✅ f.Creator sera chargé
-var film = context.Films
-    .Include(f => f.Creator)
-    .FirstOrDefault();
-Console.WriteLine(film.Creator.Firstname); // OK!
-```
-
-### 2. Gestion du cycle de vie du DbContext
-
-Le `DbContext` **doit être disposé** après utilisation :
-
-```csharp
-// ✅ Bon : using garantit la libération des ressources
-using (DataContext context = new DataContext())
-{
-    // Opérations...
-} // Dispose() appelé automatiquement
-
-// ❌ Éviter : risque de fuite mémoire
-var context = new DataContext();
-// ... opérations
-// Oubli de context.Dispose()
-```
-
-**💡 Règle :** Un DbContext par unité de travail (requête ou transaction).
-
-### 3. SaveChanges() est nécessaire
-
-EF Core utilise un **pattern Unit of Work** :
-
-```csharp
-// ❌ Aucune modification en base
-var film = context.Films.First();
-film.Title = "Nouveau titre";
-// Pas de SaveChanges() → changement perdu
-
-// ✅ Modifications persistées
-var film = context.Films.First();
-film.Title = "Nouveau titre";
-context.SaveChanges(); // Exécute UPDATE en base
-```
-
-### 4. Attention aux clés étrangères dans HasData()
-
-Lors du seeding, vous devez respecter l'ordre des dépendances :
-
-```csharp
-// ✅ Bon ordre : Creator d'abord, puis Films
-builder.HasData(new Creator { Id = 1, Lastname = "Cameron" });
-builder.HasData(new Film { Id = 1, CreatorId = 1, Title = "Avatar" });
-
-// ❌ Mauvais : Film référence un Creator inexistant
-builder.HasData(new Film { Id = 1, CreatorId = 999, Title = "Avatar" });
-```
-
-### 5. Utiliser AsNoTracking() pour les lectures seules
-
-Pour de meilleures performances sur les requêtes en lecture seule :
-
-```csharp
-// Plus rapide si vous ne modifiez pas les données
-var films = context.Films
-    .AsNoTracking()  // Pas de tracking EF Core
-    .Include(f => f.Creator)
-    .ToList();
-```
-
-### 6. Gérer les relations Many-to-Many existantes
-
-```csharp
-// ❌ Ajoute une nouvelle ligne en base
-var film = context.Films.Include(f => f.Actors).First();
-film.Actors.Add(new Actor { Id = 5, Firstname = "John", Lastname = "Doe" });
-
-// ✅ Associe un acteur existant
-var film = context.Films.Include(f => f.Actors).First();
-var existingActor = context.Actors.Find(5);
-film.Actors.Add(existingActor);
-context.SaveChanges();
-```
-
-## 📚 Pour aller plus loin
-
-### Concepts avancés à explorer
-
-#### 1. Requêtes asynchrones
-
-```csharp
-public async Task<IEnumerable<Film>> GetAllFilmsAsync()
-{
-    return await context.Films
-        .Include(f => f.Creator)
-        .Include(f => f.Actors)
-        .ToListAsync();
-}
-```
-
-**Avantages :** Meilleure scalabilité, ne bloque pas le thread.
-
-#### 2. Specification Pattern
-
-Pour des requêtes complexes et réutilisables :
-
-```csharp
-public class FilmByYearSpecification : ISpecification<Film>
-{
-    private readonly int _year;
-    
-    public Expression<Func<Film, bool>> Criteria => f => f.ReleasedYear == _year;
-}
-```
-
-#### 3. Unit of Work Pattern
-
-Gérer plusieurs repositories dans une seule transaction :
-
-```csharp
-public interface IUnitOfWork : IDisposable
-{
-    IFilmRepository Films { get; }
-    IActorRepository Actors { get; }
-    Task<int> SaveChangesAsync();
-}
-```
-
-#### 4. Projections avec Select()
-
-Optimiser les performances en ne chargeant que les données nécessaires :
-
-```csharp
-var filmTitles = context.Films
-    .Select(f => new { f.Title, f.ReleasedYear })
-    .ToList();
-```
-
-#### 5. Global Query Filters
-
-Filtrer automatiquement les requêtes (ex: Soft Delete) :
-
-```csharp
-modelBuilder.Entity<Film>()
-    .HasQueryFilter(f => !f.IsDeleted);
-```
-
-#### 6. Shadow Properties
-
-Propriétés gérées par EF Core mais absentes du modèle :
-
-```csharp
-builder.Property<DateTime>("CreatedAt");
-builder.Property<DateTime>("UpdatedAt");
-```
-
-#### 7. Value Conversions
-
-Convertir des types .NET vers des types SQL :
-
-```csharp
-builder.Property(f => f.Genres)
-    .HasConversion(
-        v => string.Join(',', v),        // Vers DB
-        v => v.Split(',', StringSplitOptions.None) // Depuis DB
-    );
-```
-
-#### 8. Owned Types
-
-Pour des objets valeurs (Value Objects) :
-
-```csharp
-builder.OwnsOne(f => f.Address, address =>
-{
-    address.Property(a => a.Street).HasMaxLength(100);
-    address.Property(a => a.City).HasMaxLength(50);
-});
-```
-
-### Ressources recommandées
-
-- 📖 [Documentation officielle EF Core](https://learn.microsoft.com/ef/core/)
-- 📖 [Microsoft Learn - EF Core](https://learn.microsoft.com/training/modules/persist-data-ef-core/)
-
-## 📝 Résumé du workflow Code First
-
-```
-1. Créer les modèles (classes C#)
-                ↓
-2. Configurer les entités (Fluent API)
-                ↓
-3. Créer le DbContext
-                ↓
-4. Générer une migration
-   dotnet ef migrations add NomMigration / Add-Migration "nom de la migration"
-                ↓
-5. Appliquer la migration
-   dotnet ef database update / Update-Database
-                ↓
-6. Utiliser le contexte (Repository/Service)
+```bash
+dotnet restore
+dotnet clean
+dotnet build
 ```
 
 ---
 
-## 🏆 Bonne pratiques résumées
+## 📚 Ressources supplémentaires
 
-✅ **DO**
-- Utiliser `using` pour le DbContext
-- Configurer avec Fluent API dans des classes séparées
-- Utiliser `Include()` pour charger les relations
-- Appeler `SaveChanges()` après modifications
-- Nommer les migrations de manière descriptive
-- Utiliser `AsNoTracking()` pour les lectures seules
-
-❌ **DON'T**
-- Réutiliser un DbContext trop longtemps
-- Oublier `SaveChanges()`
-- Mélanger configuration et entités
-- Utiliser Select N+1 (charger en boucle)
-- Ignorer les migrations
+### Documentation officielle
+- [Entity Framework Core Documentation](https://learn.microsoft.com/ef/core/)
+- [Code First Approach](https://learn.microsoft.com/ef/core/modeling/)
+- [Migrations Overview](https://learn.microsoft.com/ef/core/managing-schemas/migrations/)
+- [Query Data](https://learn.microsoft.com/ef/core/querying/)
+- [Performance](https://learn.microsoft.com/ef/core/performance/)
 
 ---
 
-**🎓 Bon apprentissage avec Entity Framework Core !**
+## 📄 License
 
-*Projet pédagogique - 2026*
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+---
+
+## 👤 Auteur
+
+**Quentin** - Formateur .NET / ASP.NET Core
+
+---
+
+<div align="center">
+
+**⭐ Si ce projet vous a été utile, n'hésitez pas à lui donner une étoile ! ⭐**
+
+Made with ❤️ for learning
+
+</div>
